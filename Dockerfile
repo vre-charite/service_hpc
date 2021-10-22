@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 # set timezone
 ENV TZ=America/Toronto
+ENV HTTP_PROXY="http://proxy.charite.de:8080"
+ENV HTTPS_PROXY="http://proxy.charite.de:8080"
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update
 RUN apt-get install -y vim
