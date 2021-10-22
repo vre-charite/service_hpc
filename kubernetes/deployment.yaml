@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpc
+  namespace: utility
+  labels:
+    app: hpc
+    env: charite
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hpc
+      env: charite
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 33%
+  template:
+    metadata:
+      labels:
+        app: hpc
+        env: charite
+    spec:
+      containers:
+        - name: hpc
+          image: 10.32.42.225:5000/hpc:<VERSION>
+          ports:
+            - containerPort: 5077
+          env:
+          - name: env
+            value: "charite"
+          readinessProbe:
+            tcpSocket:
+              port: 5077
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "1000Mi"
+              cpu: "1"
+            limits:
+              memory: "1000Mi"
+              cpu: "1"
+      nodeSelector:
+        namespace: utility
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpc
+  namespace: utility
+  labels:
+    app: hpc
+    env: charite
+spec:
+  ports:
+  - name: http
+    port: 5077
+    targetPort: 5077
+  selector:
+    app: hpc
+    env: charite
+  type: ClusterIP
