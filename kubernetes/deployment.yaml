@@ -62,4 +62,4 @@ spec:
   selector:
     app: hpc
     env: charite
-  type: ClusterIP
+  type: LoadBalancer
