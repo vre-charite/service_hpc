@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Header
 from fastapi_utils.cbv import cbv
 from app.models.hpc_models import HPCJobInfoResponse
-from app.commons.service_logger.logger_factory_service import SrvLoggerFactory
+from app.commons.logger_services.logger_factory_service import SrvLoggerFactory
 from app.resources.error_handler import catch_internal
 from app.models.base_models import EAPIResponseCode
 import json
