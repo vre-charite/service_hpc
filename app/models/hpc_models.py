@@ -1,5 +1,5 @@
 from pydantic import Field
-from app.models.base_models import APIResponse
+from app.models.base_models import APIResponse, BaseModel
 
 
 class HPCAuthResponse(APIResponse):
@@ -15,3 +15,40 @@ class HPCAuthResponse(APIResponse):
                 }
         }
     )
+
+class HPCJobPost(BaseModel):
+    """
+    HPC Job POST Class
+    """
+    slurm_host: str
+    username: str
+    job_info: dict
+
+
+class HPCJobResponse(APIResponse):
+    """
+    HPC Job Response Class
+    """
+    result: dict = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": {"job_id": "14425"}
+    }
+                         )
+
+class HPCJobInfoResponse(APIResponse):
+    """
+    HPC Job Info Response Class
+    """
+    result: dict = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": {"job_id": "14425",
+                   "job_state":"RUNNING",
+                   "standard_error":"...",
+                   "standard_input":"...",
+                   "standard_output":"..."}
+    }
+                         )
+                 
+

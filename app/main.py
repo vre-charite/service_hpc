@@ -5,6 +5,6 @@ from app.routers.v1.api_hpc import router
 def create_app():
     app = FastAPI(title="HPC",
                   description="HPC service", docs_url="/v1/api-doc")
-    app.include_router(router)
+    app.include_router(router, prefix="/v1")
 
     return app
