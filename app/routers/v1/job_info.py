@@ -22,22 +22,21 @@ class HPCJobInfo:
                  response_model=HPCJobInfoResponse,
                  summary="Get HPC Job Info")
     @catch_internal(_API_NAMESPACE)
-    async def hpc_job_info(self, username: str, slurm_host: str, job_id: str, Authorization: str = Header(...)):
+    async def hpc_job_info(self, username: str, slurm_host: str, job_id: str, protocol: str, Authorization: str = Header(...)):
         '''
         Retrieve HPC Job Info
         '''
         self._logger.info("API hpc_job_info".center(80, '-'))
         api_response = HPCJobInfoResponse()
         try:
-            url = 'https://%s/slurm/v0.0.36/job/%s'%(slurm_host, job_id)
+            url = '%s://%s/slurm/v0.0.36/job/%s'%(protocol, slurm_host, job_id)
             headers = {
                         'Content-Type': 'application/json',
                         'X-SLURM-USER-NAME': username,
                         'X-SLURM-USER-TOKEN': Authorization
                         }
 
-            proxies={"https":""}
-            r = requests.get(url, headers = headers, verify = False, proxies=proxies)
+            r = requests.get(url, headers = headers, verify = False, proxies={f"{protocol}":""})
             if not r.status_code == 200:
                     raise Exception(f"Status: {r.status_code}. Error: {r.text}")
             

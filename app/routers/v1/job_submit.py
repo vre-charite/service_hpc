@@ -32,17 +32,20 @@ class HPCJobSubmit:
         try:
             req = request.json()
             payload = json.loads(req)
-            url = 'https://%s/slurm/v0.0.36/job/submit'%(payload['slurm_host'])
+            url = '%s://%s/slurm/v0.0.36/job/submit'%(payload['protocol'], payload['slurm_host'])
             headers = {
                         'Content-Type': 'application/json',
                         'X-SLURM-USER-NAME': payload['username'],
                         'X-SLURM-USER-TOKEN': Authorization
                     }
-            proxies={"https":""}
-            r = requests.post(url, headers = headers, json = payload['job_info'], verify = False, proxies = proxies)
-            if not r.status_code == 200:
-                raise Exception(f"Status code: {r.status_code}. Error: {r.text}")
             
+            r = requests.post(url, headers = headers, json = payload['job_info'], verify = False, proxies = {payload['protocol']:""})
+            if not r.status_code == 200:
+                api_response.error_msg = r.text
+                self._logger.error(r.text)
+                api_response.code = EAPIResponseCode(r.status_code)
+                return api_response.json_response()
+                        
             response = r.json()
             response_info = {"job_id":response["job_id"]}
             self._logger.info(f"Job submission response: {response_info}: Status code: {r.status_code}")

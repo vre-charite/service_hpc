@@ -1,6 +1,6 @@
 # service_hpc
 
-This service is built for communicating with HPC (auth, job submission, retrieve job status). It's built using the FastAPI python framework.
+This service is built for communicating with HPC (auth, job submission, retrieve job info, retrieve node and partition info). It's built using the FastAPI python framework.
 
 
 ## Installation
@@ -11,3 +11,13 @@ This service is built for communicating with HPC (auth, job submission, retrieve
 
 Run the service with uvicorn
 `python3 run.py`
+
+
+
+
+
+
+
+
+
+

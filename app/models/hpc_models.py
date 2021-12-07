@@ -1,6 +1,13 @@
-from pydantic import Field
+from pydantic import Field, validator
 from app.models.base_models import APIResponse, BaseModel
 
+class HPCAuthPost(BaseModel):
+    """
+    HPC Job POST Class
+    """
+    token_issuer: str
+    username: str
+    password: str
 
 class HPCAuthResponse(APIResponse):
     """
@@ -23,7 +30,21 @@ class HPCJobPost(BaseModel):
     slurm_host: str
     username: str
     job_info: dict
+    protocol: str
 
+    @validator("job_info")
+    def verify_job_submission(cls, v):
+        main_parameters = ["job", "script"]
+        job_parameters = ["current_working_directory","environment"]
+        for parameter in main_parameters:
+            if parameter not in v:
+                raise ValueError(f'Missing {parameter} in job submission payload')
+
+        for parameter in job_parameters:
+            if parameter not in v['job']:
+                raise ValueError(f'Missing {parameter} in job_info of submission payload')
+
+        return v
 
 class HPCJobResponse(APIResponse):
     """
@@ -50,5 +71,118 @@ class HPCJobInfoResponse(APIResponse):
                    "standard_output":"..."}
     }
                          )
-                 
 
+
+class HPCNodesResponse(APIResponse):
+    """
+    HPC Nodes Info Response Class
+    """
+    result: list = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": [
+            {
+                "hostname": {
+                    "cores": 42,
+                    "cpu": 200,
+                    "free_memory": 100000,
+                    "gpus": 8,
+                    "threads": 6,
+                    "state": "idle"
+
+                }
+
+            },
+            {
+                "hostname": {
+                    "cores": 20,
+                    "cpu": 100,
+                    "free_memory": 200000,
+                    "gpus": 4,
+                    "threads": 2,
+                    "state": "down"
+
+                }
+
+            }
+        ]
+    }
+                         )
+
+
+
+class HPCNodeResponse(APIResponse):
+    """
+    HPC Node Info Response Class
+    """
+    result: list = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": [
+            {
+                "hostname": {
+                    "cores": 42,
+                    "cpu": 200,
+                    "free_memory": 100000,
+                    "gpus": 8,
+                    "threads": 6,
+                    "state": "idle"
+
+                }
+
+            }
+        ]
+    }
+                         )
+
+
+
+class HPCPartitonsResponse(APIResponse):
+    """
+    HPC Partitions Info Response Class
+    """
+    result: list = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": [
+            {
+                "partition_name": {
+                    "nodes": ["s-sc-gpu01, s-sc-gpu03"],
+                    "tres": "cpu=1500,mem=20000M,node=2,billing=3000"
+
+                }
+
+            },
+            {
+                "partition_name": {
+                    "nodes": ["s-sc-gpu02"],
+                    "tres": "cpu=2500,mem=10000M,node=1,billing=2000"
+
+                }
+
+            }
+        ]
+    }
+                         )
+
+
+
+class HPCPartitionResponse(APIResponse):
+    """
+    HPC Partition Info Response Class
+    """
+    result: list = Field({}, example={
+        "code": 200,
+        "error_msg": "",
+        "result": [
+            {
+                "partition_name": {
+                    "nodes": ["s-sc-gpu01, s-sc-gpu03"],
+                    "tres": "cpu=1500,mem=20000M,node=2,billing=3000"
+
+                }
+
+            }
+        ]
+    }
+                         )
