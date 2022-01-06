@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: hpc
-          image: 10.32.42.225:5000/hpc:<VERSION>
+          image: s-hdp-vre-v007.charite.de/hpc:<VERSION>
           ports:
             - containerPort: 5080
           env:
