@@ -8,8 +8,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY . .
 
-RUN /usr/local/bin/python pip install --upgrade pip
-
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "run.py"]
